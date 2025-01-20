@@ -4,10 +4,12 @@ import Login from './componets/Login';
 import { Register } from './componets/Register';
 import Home from './pages/Home/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
+import User from './pages/User/User'
+import Product from './pages/Product/Product';
 
 import ProtectedRoute from "./componets/ProtectedRoute"
 import { AuthProvider } from "./context/AuthContext";
-
+import Layout from "../src/componets/Layout"
 
 function App() {
   return (
@@ -17,15 +19,53 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route
               path="/home"
               element={
                 <ProtectedRoute>
-                  <Home />
+                  <Layout>
+                    <Home />
+                  </Layout>
+
                 </ProtectedRoute>
               }
             />
-        
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Dashboard/>
+                  </Layout>
+
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/user"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <User/>
+                  </Layout>
+
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/product"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Product/>
+                  </Layout>
+
+                </ProtectedRoute>
+              }
+            />
+
+
           </Routes>
         </Router>
       </AuthProvider>
