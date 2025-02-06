@@ -3,31 +3,141 @@
       "id": 1,
       "name": "Alice Johnson",
       "email": "alice@example.com",
-      "password": "password123"
+      "password": "password123",
+      "status": "active"
     },
     {
       "id": 2,
       "name": "Bob Smith",
       "email": "bob@example.com",
-      "password": "securepass"
+      "password": "securepass",
+      "status": "inactive"
     },
     {
       "id": 3,
       "name": "Charlie Brown",
       "email": "charlie@example.com",
-      "password": "mypassword"
+      "password": "mypassword",
+      "status": "active"
     },
     {
       "id": 4,
       "name": "Diana Prince",
       "email": "diana@example.com",
-      "password": "wonderwoman"
+      "password": "wonderwoman",
+      "status": "inactive"
     },
     {
       "id": 5,
       "name": "Eve Adams",
       "email": "eve@example.com",
-      "password": "password456"
+      "password": "password456",
+      "status": "active"
+    },
+    {
+      "id": 6,
+      "name": "Frank Castle",
+      "email": "frank@example.com",
+      "password": "punisher",
+      "status": "inactive"
+    },
+    {
+      "id": 7,
+      "name": "Grace Hopper",
+      "email": "grace@example.com",
+      "password": "navy123",
+      "status": "active"
+    },
+    {
+      "id": 8,
+      "name": "Hank Pym",
+      "email": "hank@example.com",
+      "password": "antman",
+      "status": "active"
+    },
+    {
+      "id": 9,
+      "name": "Ivy Green",
+      "email": "ivy@example.com",
+      "password": "nature123",
+      "status": "inactive"
+    },
+    {
+      "id": 10,
+      "name": "Jack Sparrow",
+      "email": "jack@example.com",
+      "password": "pirate",
+      "status": "active"
+    },
+    {
+      "id": 11,
+      "name": "Kate Bishop",
+      "email": "kate@example.com",
+      "password": "hawkeye",
+      "status": "inactive"
+    },
+    {
+      "id": 12,
+      "name": "Liam Neeson",
+      "email": "liam@example.com",
+      "password": "taken123",
+      "status": "active"
+    },
+    {
+      "id": 13,
+      "name": "Mia Wallace",
+      "email": "mia@example.com",
+      "password": "pulpfiction",
+      "status": "inactive"
+    },
+    {
+      "id": 14,
+      "name": "Noah Centineo",
+      "email": "noah@example.com",
+      "password": "romcom123",
+      "status": "active"
+    },
+    {
+      "id": 15,
+      "name": "Olivia Wilde",
+      "email": "olivia@example.com",
+      "password": "director",
+      "status": "active"
+    },
+    {
+      "id": 16,
+      "name": "Peter Parker",
+      "email": "peter@example.com",
+      "password": "spiderman",
+      "status": "inactive"
+    },
+    {
+      "id": 17,
+      "name": "Quinn Harper",
+      "email": "quinn@example.com",
+      "password": "creative123",
+      "status": "active"
+    },
+    {
+      "id": 18,
+      "name": "Rachel Green",
+      "email": "rachel@example.com",
+      "password": "friends",
+      "status": "inactive"
+    },
+    {
+      "id": 19,
+      "name": "Steve Rogers",
+      "email": "steve@example.com",
+      "password": "captain",
+      "status": "active"
+    },
+    {
+      "id": 20,
+      "name": "Tony Stark",
+      "email": "tony@example.com",
+      "password": "ironman",
+      "status": "inactive"
     }
-  ]
-  
+]
+

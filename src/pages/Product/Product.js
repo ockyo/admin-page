@@ -2,7 +2,7 @@ import React from 'react'
 
 const Product = () => {
   return (
-    <div>Product pages</div>
+    <div>Product pages being update</div>
   )
 }
 
