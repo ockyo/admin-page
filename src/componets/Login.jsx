@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate(); // Hook để điều hướng
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://103.9.157.26:8080/Account/Login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
@@ -26,20 +26,22 @@ const Login = () => {
       }
 
       const data = await response.json(); // Lấy dữ liệu từ API
-      login(data.token, rememberMe); // Lưu token vào context hoặc localStorage
+      const decoded = jwtDecode(data.token);
+      login(data.token, username, rememberMe); // Lưu token vào context hoặc localStorage
+      console.log(decoded.id); 
       navigate("/home"); // Điều hướng đến trang Home
+      
     } catch (error) {
-      setErrorMessage(error.message); // Hiển thị lỗi nếu có      
-      alert("Login failed: " + error.message);
+      alert("Login failed: " + error.message);  
     }
   };
   return (
     <div className="text-center mt-48" >
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label for="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-          <input type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" value={email}
-            onChange={(e) => setEmail(e.target.value)} required />
+          <label for="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+          <input type="text" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" value={username}
+            onChange={(e) => setUsername(e.target.value)} required />
         </div>
         <div className="mb-5">
           <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
@@ -69,28 +71,3 @@ const Login = () => {
 
 export default Login;
 
-
-
-
-// // Mô phỏng API call
-//     const mockApiResponse = async () => {
-//       return new Promise((resolve, reject) => {
-//         setTimeout(() => {
-//           if (email === "user@example.com" && password === "password123") {
-//             resolve({
-//               token: "mock-jwt-token", // Token giả lập từ server
-//             });
-//           } else {
-//             reject(new Error("Invalid credentials"));
-//           }
-//         }, 1000);
-//       });
-//     };
-
-//     try {
-//       const response = await mockApiResponse(); // Gọi API
-//       login(response.token, rememberMe); // Lưu token
-//       navigate("/home"); // Điều hướng đến trang Home
-//     } catch (error) {
-//       alert("Login failed: " + error.message);
-//     }
