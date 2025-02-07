@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import {jwtDecode} from "jwt-decode";
+// import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -9,11 +9,12 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate(); // Hook để điều hướng
   const { login } = useAuth();
-
+  const BASE_URL = process.env.REACT_APP_API_URL;
+  console.log(BASE_URL);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://103.9.157.26:8080/Account/Login", {
+      const response = await fetch(`${BASE_URL}/Account/Login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,25 +27,24 @@ const Login = () => {
       }
 
       const data = await response.json(); // Lấy dữ liệu từ API
-      const decoded = jwtDecode(data.token);
+      // const decoded = jwtDecode(data.token);
       login(data.token, username, rememberMe); // Lưu token vào context hoặc localStorage
-      console.log(decoded.id); 
-      navigate("/home"); // Điều hướng đến trang Home
-      
+      navigate("/home");
+
     } catch (error) {
-      alert("Login failed: " + error.message);  
+      alert("Login failed: " + error.message);
     }
   };
   return (
     <div className="text-center mt-48" >
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label for="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
-          <input type="text" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" value={username}
+          <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
+          <input type="text" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" value={username}
             onChange={(e) => setUsername(e.target.value)} required />
         </div>
         <div className="mb-5">
-          <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
           <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value={password}
             onChange={(e) => setPassword(e.target.value)} required />
         </div>
@@ -53,7 +53,7 @@ const Login = () => {
             <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)} />
           </div>
-          <label for="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
+          <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
         </div>
         <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
         <div className="mt-4">
