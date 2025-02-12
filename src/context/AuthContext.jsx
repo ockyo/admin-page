@@ -3,43 +3,50 @@ import React, { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [name, setName] = useState(()=> {
-  return localStorage.getItem("name") || sessionStorage.getItem("name") || null;
-});
-const [token, setToken] = useState(() => {
-  return localStorage.getItem("token") || sessionStorage.getItem("token") || null;
-});
+  const [name, setName] = useState(() => {
+    return localStorage.getItem("name") || sessionStorage.getItem("name") || null;
+  });
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token") || sessionStorage.getItem("token") || null;
+  });
+  const [role, setRole] = useState(() =>
+    localStorage.getItem("role") || sessionStorage.getItem("role") || null
+  );
+ 
+  const login = (token, name, role, rememberMe) => {
+    setToken(token);
+    setName(name);
+    setRole(role);
+    if (rememberMe) {
+      localStorage.setItem("token", token); 
+      localStorage.setItem("name", name);
+      localStorage.setItem("role", role);
+    } else {
+      sessionStorage.setItem("token", token); 
+      sessionStorage.setItem("name", name);
+      sessionStorage.setItem("role", role);
+    }
+  };
 
-// Hàm đăng nhập
-const login = (token, name, rememberMe) => {
-  setToken(token);
-  setName(name);
-  console.log(name);
-  if (rememberMe) {
-    localStorage.setItem("token", token); // Lưu token vào localStorage nếu chọn Remember Me
-    localStorage.setItem("name", name);
-  } else {
-    sessionStorage.setItem("token", token); // Lưu token vào sessionStorage nếu không chọn Remember Me
-    sessionStorage.setItem("name", name);
-  }
-};
 
-// Hàm đăng xuất
-const logout = () => {
-  setToken(null);
-  localStorage.removeItem("token"); // Xóa token khỏi localStorage
-  sessionStorage.removeItem("token"); // Xóa token khỏi sessionStorage
-  localStorage.removeItem("name");
-  sessionStorage.removeItem("name"); 
-};
-// Kiểm tra xem người dùng có đăng nhập hay không
-const isLoggedIn = !!token;
+  const logout = () => {
+    setToken(null);
+    localStorage.removeItem("token"); 
+    sessionStorage.removeItem("token"); 
+    localStorage.removeItem("name");
+    sessionStorage.removeItem("name");
+    localStorage.removeItem("role");
+    sessionStorage.removeItem("role");
+  };
+  // Kiểm tra xem người dùng có đăng nhập hay không
+  const isLoggedIn = !!token;
+  const isAdmin = role === true;
 
-return (
-  <AuthContext.Provider value={{ name, token, isLoggedIn, login, logout }}>
-    {children}
-  </AuthContext.Provider>
-);
+  return (
+    <AuthContext.Provider value={{ name, token, isLoggedIn, isAdmin, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

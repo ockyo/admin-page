@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-// import {jwtDecode} from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const navigate = useNavigate(); // Hook để điều hướng
+  const navigate = useNavigate();
   const { login } = useAuth();
   const BASE_URL = process.env.REACT_APP_API_URL;
-  console.log(BASE_URL);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -26,9 +25,11 @@ const Login = () => {
         throw new Error("Invalid credentials");
       }
 
-      const data = await response.json(); // Lấy dữ liệu từ API
-      // const decoded = jwtDecode(data.token);
-      login(data.token, username, rememberMe); // Lưu token vào context hoặc localStorage
+      const data = await response.json(); 
+      const decoded = jwtDecode(data.token);
+
+      console.log(decoded.IsAdmin);
+      login(data.token, username,decoded.IsAdmin, rememberMe); // Lưu token vào context hoặc localStorage
       navigate("/home");
 
     } catch (error) {

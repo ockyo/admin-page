@@ -12,7 +12,7 @@ const PORT = 5000;
 // Secret key để ký token
 const SECRET_KEY = "your-secret-key";
 
-// URL kết nối MongoDB (thay đổi nếu bạn sử dụng MongoDB Atlas hoặc MongoDB khác)
+// URL kết nối MongoDB 
 const url = "mongodb+srv://trungnguyenkc5:nguyen0803@devtest.laahnze.mongodb.net/Dev01?retryWrites=true&w=majority&appName=DevTest";
 const client = new MongoClient(url);
 
