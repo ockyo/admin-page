@@ -1,0 +1,19 @@
+name: Deploy React App 
+
+on:
+  push:
+    branches:
+      - noname
+
+jobs:
+  deploy:
+    runs-on: self-hosted # Chạy trên máy chủ runner của bạn
+
+    steps:
+      - name: 🔄 Checkout code mới nhất
+        uses: actions/checkout@v4
+
+      - name: 🐳 Build và chạy container với Docker Compose
+        run: |
+          docker compose down
+          docker compose up -d --build
