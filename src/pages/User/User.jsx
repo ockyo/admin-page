@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ToggleSwitch from "../../componets/ToggleSwitch";
 import { Modal } from "../../componets/Modal";
+import UserDataServices from "../../services/UserService/UserDataServices";
 const User = () => {
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,26 +17,17 @@ const User = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+    const fetchUsers = async () => {
+        try {
+            const data = await UserDataServices.getAllUsers();
+            setUsers(data);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
     useEffect(() => {
-        const fetchUsers = async () => {
-            const token = sessionStorage.getItem("token");
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/Account/GetAllUser`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setUsers(response.data);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            } finally {
-                // setLoading(false); // Kết thúc trạng thái loading, cập nhật sau phần này
-            }
-        };
-
         fetchUsers();
     }, []);
-
     //updating
     const handleToggle = (id, newState) => {
         // Cập nhật trạng thái isActive của user trong danh sách
