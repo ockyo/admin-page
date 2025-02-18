@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ToggleSwitch from "../../componets/ToggleSwitch";
-import { Modal } from "../../componets/Modal";
 import UserDataServices from "../../services/UserService/UserDataServices";
 import Notification from "../Nofication/Notification";
-
+import ConfirmDialog from "../PostUp/ConfirmDialog";
+import CreateAccountForm from "../PostUp/CreateAccountForm"
+import ResetAccountForm from "../PostUp/ResetAccountForm";
 const User = () => {
+    const [edit, setEdit] = useState(false); 
+    const [userId, setUserId] = useState(null); 
     const [users, setUsers] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalType, setModalType] = useState("");
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     const [notification, setNotification] = useState(null);
-    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        idTiktok: "",
-        isActive: true, // Thêm isActive cho trường hợp chỉnh sửa
-    });
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const [showForm, setShowForm] = useState(false);
 
     // GET LIST USER
     const fetchUsers = async () => {
@@ -61,7 +53,7 @@ const User = () => {
                 message: "Add user successfully!",
                 type: "success",
             });
-            closeModal();
+            setShowForm(false);
             fetchUsers(); // Refresh user list
         } catch (error) {
             setNotification({
@@ -70,12 +62,53 @@ const User = () => {
             });
         }
     };
+    
+    //Reset Pass
+    const resetPass = async() =>{
+        try{
+            await UserDataServices.resetPassword(userId);
+            setNotification({
+                message: "Reset PassWord Successfully!",
+                type: "success",
+            });
+            setEdit(false); 
+        }
+        catch(error){
+            setNotification({
+                message: "Reset PassWord Fail!",
+                type: "error",
+            });
+        }
+    }
+
+    //Reset Pass
+    const resetAuthenKey = async() =>{
+        try{
+            await UserDataServices.resetKey(userId);
+            setNotification({
+                message: "Reset Key Successfully!",
+                type: "success",
+            });
+            setEdit(false); 
+        }
+        catch(error){
+            setNotification({
+                message: "Reset Key Fail!",
+                type: "error",
+            });
+        }
+    }
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    // Updating
+    const selectUser = (id) => {
+        setUserId(id);
+        setEdit(true);
+      };
+
+    // Updating status user
     const handleToggle = (id, newState) => {
         changeStatus(id, newState);
         const updatedUsers = users.map((user) =>
@@ -85,51 +118,9 @@ const User = () => {
     };
 
     const handleCloseNotification = () => {
-        setNotification(null); // Close notification when hidden
+        setNotification(null);
     };
 
-    const openModal = (type, user) => {
-        setModalType(type);
-        setSelectedUser(user);
-        setIsModalOpen(true);
-        if (type === "edit") {
-            setFormData({
-                username: user.userName,
-                email: user.email || "",
-                idTiktok: user.idTiktok || "",
-                isActive: user.isActive,
-            });
-        } else {
-            setFormData({
-                username: "",
-                email: "",
-                idTiktok: "",
-                isActive: true,
-            });
-        }
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setSelectedUser(null);
-        setFormData({
-            username: "",
-            email: "",
-            idTiktok: "",
-            isActive: true,
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Prevent page reload
-        if (modalType === "add") {
-            createUser(formData.username, formData.password);
-        } else if (modalType === "edit" && selectedUser) {
-            // Update logic can be added here for editing user
-            console.log("Editing user:", formData);
-            closeModal();
-        }
-    };
     const handleDelete = async (userId) => {
         try {
             await UserDataServices.deleteUser(userId); // Giả sử có phương thức deleteUser trong dịch vụ của bạn
@@ -145,13 +136,37 @@ const User = () => {
             });
         }
     };
+
     const handleDeleteConfirm = (id) => {
-        const isConfirmed = window.confirm("Are you sure you want to delete this user?");
-        if (isConfirmed) {
-            handleDelete(id);
-        }
+        setUserToDelete(id); 
+        setShowConfirm(true);
     };
+
+    const handleCreateAccount = (data) => {
+        createUser(data.username,data.password);
+      };
+
+    const handleResetPassword = () => {
+        resetPass();
+      };
     
+    const handleResetAuthKey = () => {
+        resetAuthenKey();
+      };
+
+    const handleConfirm = (result) => {
+        if (result && userToDelete !== null) {
+        handleDelete(userToDelete);
+        }
+        setShowConfirm(false);
+      };
+
+    const handleCancel = () => {
+        setShowConfirm(false); 
+        setShowForm(false);
+        setEdit(false);
+      };
+
     return (
         <div>
             <div className="container mx-auto p-4">
@@ -166,7 +181,7 @@ const User = () => {
                 <div>
                     <button
                         className="bg-red-100 rounded-md p-2 mb-2 border-2 border-blue-600 hover:bg-blue-600"
-                        onClick={() => openModal("add")}
+                        onClick={() => setShowForm(true)}
                     >
                         CREATE USER
                     </button>
@@ -183,7 +198,13 @@ const User = () => {
                                     Name user
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    id-tiktok
+                                    ID-TIkTOK
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Day Active
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Last Time Login
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Status
@@ -199,6 +220,20 @@ const User = () => {
                                     <td className="px-6 py-4 font-medium text-gray-900">{index + 1}</td>
                                     <td className="px-6 py-4">{user.userName}</td>
                                     <td className="px-6 py-4">{user.idTiktok}</td>
+                                    <td className="px-6 py-4">
+                                    {new Date(user.timeActive).toLocaleDateString('en-GB')}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                    {new Date(user.lastLogin).toLocaleString('en-GB', { 
+                                        timeZone: 'Asia/Bangkok', 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric',
+                                        hour: '2-digit', 
+                                        minute: '2-digit', 
+                                        hour12: false 
+                                    })}
+                                    </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <ToggleSwitch
@@ -217,7 +252,7 @@ const User = () => {
                                     <td className="px-6 py-4">
                                         <button
                                             className="text-blue-600 hover:underline mr-2"
-                                            onClick={() => openModal("edit", user)}
+                                            onClick={() => selectUser(user.id)}
                                         >
                                             <PencilIcon className="w-5 h-5 text-blue-600" />
                                         </button>
@@ -228,6 +263,7 @@ const User = () => {
                                         >
                                             <TrashIcon className="w-5 h-5 text-red-600" />
                                         </button>
+                                       
                                     </td>
                                 </tr>
                             ))}
@@ -236,93 +272,30 @@ const User = () => {
                 </div>
             </div>
 
-            {/* Modal */}
-            <Modal isOpen={isModalOpen} onClose={closeModal} title={modalType === "add" ? "CREATE NEW USER FOR ACTION APP" : "Edit User"}>
-                {modalType === "add" ? (
-                    <form onSubmit={handleSubmit}>
-                        <div className="text-center mb-4">
-                            <h2 className="text-2xl font-semibold">{modalType === "add" ? "CREATE NEW USER FOR ACTION APP" : "Edit User"}</h2>
-                        </div>
+            {showConfirm && (
+                                        <ConfirmDialog
+                                        message="Delete User ?"
+                                        onConfirm={handleConfirm}
+                                        onCancel={handleCancel}
+                                        />
+            )}
 
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Enter username"
-                            onChange={handleChange}
-                            value={formData.username}
-                            className="border p-2 w-full mb-4"
-                        />
+            {edit && userId && ( 
+        <ResetAccountForm
+          userId={userId} 
+          onResetPassword={handleResetPassword}
+          onResetAuthKey={handleResetAuthKey}
+          onCancel={handleCancel}
+        />
+            )}
 
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Enter password"
-                            onChange={handleChange}
-                            value={formData.password}
-                            className="border p-2 w-full mb-4"
-                        />
+              {showForm && (
+                <CreateAccountForm
+                onCreate={handleCreateAccount}
+                onCancel={handleCancel}
+                />
+            )}
 
-                        <button
-                            type="submit"
-                            className="bg-green-500 text-white px-4 py-2 rounded-md w-full"
-                            disabled={!formData.username || !formData.password}
-                        >
-                            CREATE USER
-                        </button>
-                    </form>
-                ) : (
-                    selectedUser && (
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="username" className="block mb-2">Username</label>
-                                <input
-                                    type="text"
-                                    name="username"
-                                    placeholder="Enter username"
-                                    value={formData.username || selectedUser.userName}
-                                    onChange={handleChange}
-                                    className="border p-2 w-full mb-4"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="idTiktok" className="block mb-2">ID TikTok</label>
-                                <input
-                                    type="text"
-                                    name="idTiktok"
-                                    placeholder="Enter ID TikTok"
-                                    value={formData.idTiktok || selectedUser.idTiktok}
-                                    onChange={handleChange}
-                                    className="border p-2 w-full mb-4"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label className="block mb-2">Status</label>
-                                <div className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        name="isActive"
-                                        checked={formData.isActive !== undefined ? formData.isActive : selectedUser.isActive}
-                                        onChange={handleChange}
-                                        className="mr-2"
-                                    />
-                                    <span>{formData.isActive !== undefined ? (formData.isActive ? 'Active' : 'Inactive') : (selectedUser.isActive ? 'Active' : 'Inactive')}</span>
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md w-full"
-                            >
-                                Save Changes
-                            </button>
-                        </form>
-                    )
-                )}
-            </Modal>
-
-            
         </div>
     );
 };

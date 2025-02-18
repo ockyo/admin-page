@@ -8,9 +8,14 @@ class UserDataService {
   changStatusUser(id, status) {
     return apiService.patch(`/Account/ChangStatusUser?id=${id}&status=${status}`);
 }
-//   getUserById(id) {
-//     return apiService.get(`/users/${id}`);
-//   }
+
+  resetKey(id){
+    return apiService.patch(`/Account/ResetKey?id=${id}`);
+  }
+
+  resetPassword(id){
+    return apiService.patch(`/Account/ResetPassword?id=${id}`);
+  }
 
   createUser(newUser) {
     return apiService.post("/Account/AddUser", newUser);
