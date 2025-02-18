@@ -5,21 +5,24 @@ class UserDataService {
     return apiService.get("/Account/GetAllUser");
   }
 
+  changStatusUser(id, status) {
+    return apiService.patch(`/Account/ChangStatusUser?id=${id}&status=${status}`);
+}
 //   getUserById(id) {
 //     return apiService.get(`/users/${id}`);
 //   }
 
-//   createUser(data) {
-//     return apiService.post("/users", data);
-//   }
+  createUser(newUser) {
+    return apiService.post("/Account/AddUser", newUser);
+  }
 
-//   updateUser(id, data) {
-//     return apiService.put(`/users/${id}`, data);
-//   }
+  updateUser(data) {
+    return apiService.patch("/Account/UpdateUser", data);
+  }
 
-//   deleteUser(id) {
-//     return apiService.delete(`/users/${id}`);
-//   }
+  deleteUser(id) {
+    return apiService.delete(`/Account/DeleteUser?id=${id}`);
+  }
 }
 
 export default new UserDataService();
