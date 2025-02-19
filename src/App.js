@@ -6,7 +6,7 @@ import Home from './pages/Home/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
 import User from './pages/User/User'
 import Product from './pages/Product/Product';
-
+import Gift from './pages/Gift/Gift';
 import ProtectedRoute from "./componets/ProtectedRoute"
 import { AuthProvider } from "./context/AuthContext";
 import Layout from "../src/componets/Layout"
@@ -48,6 +48,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <User/>
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/gift-list"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Gift/>
                   </Layout>
                 </ProtectedRoute>
               }
