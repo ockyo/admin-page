@@ -57,7 +57,9 @@ const Gift = () => {
                     </tbody>
                 </table>
             </div>
-            <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+            <div className='flex justify-center items-center'>
+                <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+            </div>
 
         </div>
     )
