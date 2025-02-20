@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import GiftDataService from '../../services/GiftService/GiftDataService';
+import Pagination from '../../componets/Pagination';
+
 const Gift = () => {
     const [gifts, setGifts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
     const fetchGifts = async () => {
         try {
             const data = await GiftDataService.getAllGifts();
@@ -11,9 +15,13 @@ const Gift = () => {
             console.log("Error fetching users:", error);
         }
     };
-    useEffect(() => {
-        fetchGifts();
-    }, [])
+
+    useEffect(() => { fetchGifts(); }, [])
+
+    const totalPages = Math.ceil(gifts.length / itemsPerPage);
+    const currentGifts = gifts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+
     return (
         <div className="container mx-auto p-4">
             <div className="overflow-x-auto shadow-md sm:rounded-lg">
@@ -36,7 +44,7 @@ const Gift = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {gifts.map((gift, index) => (
+                        {currentGifts.map((gift, index) => (
                             <tr key={gift.id} className="bg-white border-b hover:bg-gray-50">
                                 <td className="px-6 py-4 font-medium text-gray-900">{index + 1}</td>
                                 <td className="px-6 py-4">{gift.name}</td>
@@ -49,6 +57,8 @@ const Gift = () => {
                     </tbody>
                 </table>
             </div>
+            <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+
         </div>
     )
 }
