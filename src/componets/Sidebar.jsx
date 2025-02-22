@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import Dashboard from "../pages/Home/Home";
 import Product from "../pages/Product/Product";
 const Sidebar = () => {
     const [isSidebarVisible, setSidebarVisible] = useState(false);
