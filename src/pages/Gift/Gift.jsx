@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import GiftDataService from '../../services/GiftService/GiftDataService';
 import Pagination from '../../componets/Pagination';
-
+import { TrashIcon } from "@heroicons/react/24/outline";
+import ConfirmButton from '../../componets/comfirmButton';
 const Gift = () => {
     const [gifts, setGifts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -15,6 +16,16 @@ const Gift = () => {
             console.log("Error fetching users:", error);
         }
     };
+
+    const handleDeleteGift = async (giftId) => {
+        try {
+            await GiftDataService.deleteGift(giftId);
+            fetchGifts();
+        } catch (error) {
+            console.log("Error deleting gift:", error);
+        }
+    };
+
 
     useEffect(() => { fetchGifts(); }, [])
 
@@ -40,7 +51,9 @@ const Gift = () => {
                             <th scope="col" className="px-6 py-3 w-24">
                                 Value
                             </th>
-
+                            <th scope="col" className="px-6 py-3 w-24">
+                                Action
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,6 +65,12 @@ const Gift = () => {
                                     <img src={gift.giftUrl} alt={gift.name} className="w-10 h-10 object-cover rounded" />
                                 </td>
                                 <td className="px-6 py-4">{gift.coin}</td>
+                                <td className="px-6 py-4">
+                                    <ConfirmButton itemName="Your gift" onConfirm={() => handleDeleteGift(gift.id)}>
+                                        <TrashIcon className="w-5 h-5 text-red-600" />
+                                    </ConfirmButton>
+
+                                </td>
                             </tr>
                         ))}
                     </tbody>
