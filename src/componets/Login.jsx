@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -25,11 +25,12 @@ const Login = () => {
         throw new Error("Invalid credentials");
       }
 
-      const data = await response.json(); 
+      const data = await response.json();
       const decoded = jwtDecode(data.token);
 
       console.log(decoded.IsAdmin);
-      login(data.token, username,decoded.IsAdmin, rememberMe); // Lưu token vào context hoặc localStorage
+      const isAdmin = decoded.IsAdmin === "True";
+      login(data.token, username, isAdmin, rememberMe); // Lưu token vào context hoặc localStorage
       navigate("/home");
 
     } catch (error) {

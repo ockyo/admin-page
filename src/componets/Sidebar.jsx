@@ -11,7 +11,9 @@ const Sidebar = () => {
     const navigate = useNavigate();
     // Toggle sidebar visibility
     const toggleSidebar = () => setSidebarVisible(!isSidebarVisible);
-    const isAdmin = localStorage.getItem("role") === "True" || sessionStorage.getItem("role") === "True";
+    // const isAdmin = localStorage.getItem("role") === true || sessionStorage.getItem("role") === true;
+    const isAdmin = localStorage.getItem("role") === "true" || sessionStorage.getItem("role") === "true";
+
 
     // Close sidebar when clicking outside
     const handleClickOutside = (event) => {
