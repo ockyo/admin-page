@@ -3,7 +3,10 @@ import GiftDataService from '../../services/GiftService/GiftDataService';
 import Pagination from '../../componets/Pagination';
 import { TrashIcon } from "@heroicons/react/24/outline";
 import ConfirmButton from '../../componets/comfirmButton';
-const Gift = () => {
+import MultiInputForm from '../../componets/MultiInputForm';
+import Swal from 'sweetalert2';
+
+function Gift() {
     const [gifts, setGifts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -25,9 +28,29 @@ const Gift = () => {
             console.log("Error deleting gift:", error);
         }
     };
+    const handleCreateGift = async (newGift) => {
+        try {
+            await GiftDataService.createGift(newGift);
+            fetchGifts();
+            console.log(newGift);
+            Swal.fire({
+                title: 'Success!',
+                text: 'Gift created successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            });
+        } catch (error) {
+            console.log("Error creating gift:", error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to create gift.',
+                icon: 'error',
+                confirmButtonText: 'Try Again',
+            });
+        }
+    };
 
-
-    useEffect(() => { fetchGifts(); }, [])
+    useEffect(() => { fetchGifts(); }, []);
 
     const totalPages = Math.ceil(gifts.length / itemsPerPage);
     const currentGifts = gifts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -35,6 +58,11 @@ const Gift = () => {
 
     return (
         <div className="container mx-auto p-4">
+            <div>
+                <MultiInputForm onSubmit={handleCreateGift} />
+
+            </div>
+
             <div className="overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -81,7 +109,7 @@ const Gift = () => {
             </div>
 
         </div>
-    )
+    );
 }
 
 export default Gift
